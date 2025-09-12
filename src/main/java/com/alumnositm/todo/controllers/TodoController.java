@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.services.TodoServices;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,8 @@ public class TodoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<TodoEntity>> getHelloWorld() {
-        
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<TodoEntity>> allTodos() {
+        return ResponseEntity.ok(todoServices.allTodos());
     }
 
 
