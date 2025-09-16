@@ -9,9 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Data
@@ -37,6 +41,7 @@ public class TodoEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TodoStatus status;
 
