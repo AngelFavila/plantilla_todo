@@ -66,6 +66,28 @@ public class TodoServicesImpl implements TodoServices {
 
     }
 
+    @Override
+    public TodoEntity deleteById(int idTodo) {
+        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+        if(todoEntity!=null){
+            todoRepository.delete(todoEntity);
+            return todoEntity;
+        }
+        return null;
+    }
+
+    @Override
+    public TodoEntity softDeleteById(int idTodo) {
+        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+        if(todoEntity!=null){
+            todoEntity.setDeleteStatus(true);
+            todoRepository.save(todoEntity);
+            return todoEntity;
+
+        }
+        return null;
+    }
+
     
 
 

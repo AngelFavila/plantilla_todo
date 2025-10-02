@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +19,6 @@ import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.services.TodoServices;
 
 import lombok.extern.slf4j.Slf4j;
-
-
-
 
 
 @Slf4j
@@ -71,6 +69,24 @@ public class TodoController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(todo);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteTodoById(@PathVariable int id) {
+        TodoEntity deletedTodo = todoServices.deleteById(id);
+        if (deletedTodo == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("softdelete/{id}")
+    public ResponseEntity<TodoEntity> softDeleteTodoById(@PathVariable int id) {
+        TodoEntity softDeletedTodo = todoServices.softDeleteById(id);
+        if (softDeletedTodo == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(softDeletedTodo);
     }
 
 

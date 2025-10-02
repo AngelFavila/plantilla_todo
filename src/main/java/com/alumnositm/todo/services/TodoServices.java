@@ -14,4 +14,8 @@ public interface TodoServices {
     TodoEntity findById(int idTodo);
 
     TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity);
+
+    TodoEntity deleteById(int idTodo);
+
+    TodoEntity softDeleteById(int idTodo);
 }
