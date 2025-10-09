@@ -18,7 +18,7 @@ public class CreateTodoRequest {
     @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s\\-_.,!¡]+$", message = "La descripcion solo puede contener letras, numeros, espacios, comas y puntos")
     private String description;
 
-    public CreateTodoRequest( String title, String description) {
+    public CreateTodoRequest(String title, String description) {
         this.title = title;
         this.description = description;
     }
