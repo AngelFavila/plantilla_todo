@@ -2,9 +2,12 @@ package com.alumnositm.todo.services.impl;
 
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.helpers.TodoStatus;
 import com.alumnositm.todo.repository.TodoRepository;
@@ -14,9 +17,11 @@ import com.alumnositm.todo.services.TodoServices;
 public class TodoServicesImpl implements TodoServices {
 
     private final TodoRepository todoRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public TodoServicesImpl(TodoRepository todoRepository) {
+    public TodoServicesImpl(TodoRepository todoRepository, JdbcTemplate jdbcTemplate) {
         this.todoRepository = todoRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class TodoServicesImpl implements TodoServices {
     }
 
     @Override
-    public TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity) {
+    public TodoEntity updateTodoById(int idTodo, UpdateTodoRequest entity) {
         TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
         if(todoEntity!=null){
             todoEntity.setTitle(entity.getTitle());
@@ -67,29 +72,35 @@ public class TodoServicesImpl implements TodoServices {
     }
 
     @Override
-    public TodoEntity deleteById(int idTodo) {
-        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
-        if(todoEntity!=null){
-            todoRepository.delete(todoEntity);
-            return todoEntity;
-        }
-        return null;
+    public List<TodoEntity> findTodosByTitle(String queryParam) {
+        String sql = "Select * From todos where title like '%"+queryParam+"%'";
+        RowMapper<TodoEntity> rowMapper = (rs,rowNum)->{
+            TodoEntity todo = new TodoEntity();
+            todo.setId(rs.getLong("id"));
+            todo.setTitle(rs.getString("title"));
+            todo.setDescription(rs.getString("description"));
+            todo.setStatus(TodoStatus.valueOf(rs.getString("status")));
+            return todo;
+        };
+
+        List<TodoEntity> todos = jdbcTemplate.query(sql, rowMapper);
+        return todos;
     }
 
     @Override
-    public TodoEntity softDeleteById(int idTodo) {
-        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+    public boolean deleteTodoById(int idTodo) {
+          TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
         if(todoEntity!=null){
-            todoEntity.setDeleteStatus(true);
-            todoRepository.save(todoEntity);
-            return todoEntity;
-
+            todoRepository.delete(todoEntity);
+            return true;
         }
-        return null;
+        return false;
     }
 
-    
-
+    public TodoEntity updateTodoById(int idTodo, CreateTodoRequest updateRequest) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateTodoById'");
+    }
 
 
 }

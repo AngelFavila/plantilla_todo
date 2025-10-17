@@ -15,7 +15,7 @@ public interface TodoServices {
 
     TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity);
 
-    TodoEntity deleteById(int idTodo);
+    List<TodoEntity> findTodosByTitle(String queryParam);
 
-    TodoEntity softDeleteById(int idTodo);
+    boolean deleteTodoById(int idTodo);
 }

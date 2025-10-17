@@ -95,11 +95,13 @@ public class CreateTodoRequestTest {
         //Test title with invalid characters
         CreateTodoRequest requestInvalidCharTitleTodo=new CreateTodoRequest("title@mail.com","descripcion valida");
         violations=validator.validate(requestInvalidCharTitleTodo);
+        System.out.println(violations.isEmpty()?"No se ":"hay violaciones");
         assertTrue(violations.stream().anyMatch(v->v.getMessage().equals("El titulo solo puede contener letras, numeros y espacios")));
 
         //Test title with valid characters
-        CreateTodoRequest requestValidCharTitleTodo=new CreateTodoRequest(" El_mejor_titulo_del_08_de_octubre_del_año_2025!! ","descripcion valida");
+        CreateTodoRequest requestValidCharTitleTodo=new CreateTodoRequest(" Él_mejor_titulo_del_08_de_octubre_del_año_2025!! ","descripcion valida");
         violations=validator.validate(requestValidCharTitleTodo);
+        System.out.println(violations.isEmpty()?"no hay violaciones":"hay violaciones");
         assertFalse(violations.stream().anyMatch(v->v.getMessage().equals("El titulo solo puede contener letras, numeros y espacios")));
     }
 
@@ -111,11 +113,13 @@ public class CreateTodoRequestTest {
         //Test description with invalid characters
         CreateTodoRequest requestInvalidCharDescriptionTodo=new CreateTodoRequest("titulo valido","description@mail.com");
         violations=validator.validate(requestInvalidCharDescriptionTodo);
+        System.out.println(violations.isEmpty()?"no hay violaciones":"hay violaciones");
         assertTrue(violations.stream().anyMatch(v->v.getMessage().equals("La descripcion solo puede contener letras, numeros, espacios, comas y puntos")));
 
         //Test description with valid characters
         CreateTodoRequest requestValidCharDescriptionTodo=new CreateTodoRequest("titulo valido"," Lá_mejor_descripción_del_08_de_octubre_año_2025!! ");
         violations=validator.validate(requestValidCharDescriptionTodo);
+        System.out.println(violations.isEmpty()?"no hay violaciones":"hay violaciones");
         assertFalse(violations.stream().anyMatch(v->v.getMessage().equals("La descripcion solo puede contener letras, numeros, espacios, comas y puntos")));
     }
 

@@ -1,3 +1,4 @@
+
 package com.alumnositm.todo.controllers;
 
 import java.net.URI;
@@ -11,14 +12,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.services.TodoServices;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+
+
+
 
 
 @Slf4j
@@ -49,7 +56,7 @@ public class TodoController {
     
 
     @PostMapping()
-    public ResponseEntity<TodoEntity> createTodo(@RequestBody CreateTodoRequest createTodoRequest) {
+    public ResponseEntity<TodoEntity> createTodo(@RequestBody @Valid CreateTodoRequest createTodoRequest) {
         TodoEntity saved = todoServices.createTodo(createTodoRequest);
 
         URI location = ServletUriComponentsBuilder
@@ -63,7 +70,7 @@ public class TodoController {
     
 
     @PutMapping("update/{idTodo}")
-    public ResponseEntity<TodoEntity> putMethodName(@PathVariable int idTodo, @RequestBody CreateTodoRequest entity) {
+    public ResponseEntity<TodoEntity> putMethodName(@PathVariable int idTodo, @RequestBody UpdateTodoRequest entity) {
         TodoEntity todo = todoServices.updateTodoById(idTodo,entity);
         if(todo==null){
             return ResponseEntity.notFound().build();
@@ -71,22 +78,19 @@ public class TodoController {
         return ResponseEntity.ok(todo);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteTodoById(@PathVariable int id) {
-        TodoEntity deletedTodo = todoServices.deleteById(id);
-        if (deletedTodo == null) {
+    @DeleteMapping("delete/{idTodo}")
+    public ResponseEntity<Void> deleteTodoById(@PathVariable int idTodo) {
+        boolean deleted = todoServices.deleteTodoById(idTodo);
+        if(!deleted){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("softdelete/{id}")
-    public ResponseEntity<TodoEntity> softDeleteTodoById(@PathVariable int id) {
-        TodoEntity softDeletedTodo = todoServices.softDeleteById(id);
-        if (softDeletedTodo == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(softDeletedTodo);
+    @GetMapping("search")
+    public ResponseEntity<List<TodoEntity>> findTodosByTitle(@RequestParam("q") String queryParam){
+        List<TodoEntity> todos =todoServices.findTodosByTitle(queryParam);
+        return ResponseEntity.ok(todos);
     }
 
 
